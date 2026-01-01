@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /i/
+Disallow: /u/
+Disallow: /w/
+Allow: /
+

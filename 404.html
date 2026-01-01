@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data.ML</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Data.ML">
+    <meta name="description" content="Where Data Scientists share their work">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Data.ML">
+    <meta property="og:description" content="Where Data Scientists share their work">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Data.ML">
+    <meta name="twitter:description" content="Where Data Scientists share their work">
+    
+    <!-- Fallback meta refresh for older browsers (bots typically ignore this) -->
+    <noscript>
+        <meta http-equiv="refresh" content="0; url=https://do.ml/discover">
+    </noscript>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e8e8e8;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #4a9eff;
+            border-radius: 50%;
+            animation: spin 0.8s ease-in-out infinite;
+            margin: 0 auto 1.5rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .fallback {
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            opacity: 0.6;
+        }
+        
+        .fallback a {
+            color: #4a9eff;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        
+        .fallback a:hover {
+            border-bottom-color: #4a9eff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h1>Loading...</h1>
+        <p class="fallback">
+            Not redirecting? <a href="https://do.ml/discover">Click here</a>
+        </p>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+            
+            // Common bot user agent patterns
+            var botPatterns = [
+                /bot/i,
+                /crawl/i,
+                /spider/i,
+                /slurp/i,
+                /googlebot/i,
+                /bingbot/i,
+                /yandex/i,
+                /baiduspider/i,
+                /facebookexternalhit/i,
+                /twitterbot/i,
+                /rogerbot/i,
+                /linkedinbot/i,
+                /embedly/i,
+                /quora link preview/i,
+                /showyoubot/i,
+                /outbrain/i,
+                /pinterest/i,
+                /applebot/i,
+                /duckduckbot/i,
+                /ia_archiver/i,
+                /semrushbot/i,
+                /ahrefsbot/i,
+                /mj12bot/i,
+                /dotbot/i,
+                /petalbot/i,
+                /headlesschrome/i,
+                /lighthouse/i,
+                /phantomjs/i,
+                /prerender/i,
+                /slackbot/i,
+                /telegrambot/i,
+                /whatsapp/i,
+                /discordbot/i
+            ];
+            
+            // Check if user agent matches any bot pattern
+            function isBot() {
+                var ua = navigator.userAgent || '';
+                for (var i = 0; i < botPatterns.length; i++) {
+                    if (botPatterns[i].test(ua)) {
+                        return true;
+                    }
+                }
+                // Additional heuristics: no webdriver, has proper window dimensions
+                if (navigator.webdriver) {
+                    return true;
+                }
+                return false;
+            }
+            
+            // Only redirect if not a bot
+            if (!isBot()) {
+                // Get current path
+                var path = window.location.pathname;
+                
+                // Handle path transformations
+                var targetPath = path;
+                if (path.startsWith('/w/')) {
+                    // Expand /w/ to /workflows/
+                    targetPath = '/workflows/' + path.slice(3);
+                }
+                // /i/ and /u/ stay the same
+                
+                // Build redirect URL with UTM parameters
+                var targetUrl = 'https://do.ml' + targetPath;
+                
+                // Add UTM parameters
+                var separator = targetUrl.indexOf('?') > -1 ? '&' : '?';
+                targetUrl += separator + 'utm_source=data_ml&utm_campaign=data_ml_name_test&utm_medium=social';
+                
+                // Preserve any existing query parameters
+                if (window.location.search) {
+                    var searchParams = window.location.search.slice(1);
+                    targetUrl += '&' + searchParams;
+                }
+                
+                // Small delay for UX smoothness
+                setTimeout(function() {
+                    // Try multiple redirect methods for compatibility
+                    
+                    // Method 1: location.replace (doesn't add to history)
+                    if (window.location && typeof window.location.replace === 'function') {
+                        window.location.replace(targetUrl);
+                    }
+                    // Method 2: location.href fallback
+                    else if (window.location) {
+                        window.location.href = targetUrl;
+                    }
+                    // Method 3: location assign
+                    else if (typeof window.location.assign === 'function') {
+                        window.location.assign(targetUrl);
+                    }
+                }, 100);
+            }
+        })();
+    </script>
+</body>
+</html>
+
