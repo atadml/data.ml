@@ -151,25 +151,64 @@
                 return false;
             }
             
+            // Mapping between short channel codes and campaign names
+            var channelCampaignMap = {
+                'ce': 'elementary',
+                'cm': 'mlops',
+                'cdt': 'dbt'
+            };
+            
             // Only redirect if not a bot
             if (!isBot()) {
                 // Get current path
                 var path = window.location.pathname;
                 
-                // Handle path transformations
+                // Handle path transformations and channel parsing
                 var targetPath = path;
-                if (path.startsWith('/w/')) {
+                var channelCode = null;
+                var mappedCampaign = null;
+                
+                // Check for channel code suffix on invite links (supports -cce or -ce styles)
+                var channelMatch = path.match(/^\/i\/([a-z0-9]+)-([a-z0-9]+)$/i);
+                if (channelMatch) {
+                    var inviteCode = channelMatch[1];
+                    var suffix = channelMatch[2].toLowerCase();
+                    var resolvedSuffix = suffix;
+                    
+                    // Support both "-ce" and "-cce" legacy styles
+                    if (!channelCampaignMap[resolvedSuffix] && suffix.startsWith('c')) {
+                        var trimmedSuffix = suffix.slice(1);
+                        if (channelCampaignMap[trimmedSuffix]) {
+                            resolvedSuffix = trimmedSuffix;
+                        }
+                    }
+
+                    channelCode = resolvedSuffix;
+                    mappedCampaign = channelCampaignMap[channelCode] || channelCode;
+                    targetPath = '/i/' + inviteCode;
+                }
+                else if (path.startsWith('/w/')) {
                     // Expand /w/ to /workflows/
                     targetPath = '/workflows/' + path.slice(3);
                 }
-                // /i/ and /u/ stay the same
+                // /i/ and /u/ without channel codes stay the same
                 
                 // Build redirect URL with UTM parameters
                 var targetUrl = 'https://do.ml' + targetPath;
                 
-                // Add UTM parameters
+                // Determine UTM campaign (default fallback if no mapping)
+                var utmCampaign = mappedCampaign || 'data_ml_name_test';
+                
+                // Build UTM parameters
+                var utmParams = 'utm_source=data_ml&utm_campaign=' + encodeURIComponent(utmCampaign) + '&utm_medium=social';
+                
+                // Add lite=1 for invite paths (enables browse-first experience)
+                if (path.startsWith('/i/')) {
+                    utmParams += '&lite=1';
+                }
+                
                 var separator = targetUrl.indexOf('?') > -1 ? '&' : '?';
-                targetUrl += separator + 'utm_source=data_ml&utm_campaign=data_ml_name_test&utm_medium=social';
+                targetUrl += separator + utmParams;
                 
                 // Preserve any existing query parameters
                 if (window.location.search) {
